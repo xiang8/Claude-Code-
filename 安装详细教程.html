@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code 安装 + GLM 模型配置教程</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #0066cc;
+            font-size: 16px;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: rgba(0, 102, 204, 0.2);
+            border: 1px solid rgba(0, 102, 204, 0.4);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #1a1a2e;
+            padding: 0 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            color: #ccc;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+
+        .tab-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            font-size: 24px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            color: #00ff88;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .code-block .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .warning {
+            background: rgba(255, 193, 7, 0.15);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            color: #f57c00;
+            margin-bottom: 5px;
+        }
+
+        .tip {
+            background: rgba(0, 102, 204, 0.15);
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .info-card h4 {
+            margin-bottom: 10px;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .platform-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .platform-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .platform-card.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .platform-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .check-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .check-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .check-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: bold;
+        }
+
+        .model-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .model-card.recommended {
+            border-color: #0066cc;
+            background: rgba(0, 102, 204, 0.08);
+        }
+
+        .model-name {
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .model-desc {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            color: #333;
+            position: relative;
+        }
+
+        .progress-step.active {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .progress-step.completed {
+            color: #0066cc;
+        }
+
+        .progress-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Claude Code + GLM 模型配置教程</h1>
+            <p class="subtitle">从零开始配置 AI 编程助手</p>
+            <span class="badge">📌 Windows 专用教程</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step active">1. 安装环境</div>
+            <div class="progress-step">2. 安装 Claude Code</div>
+            <div class="progress-step">3. 配置 API</div>
+            <div class="progress-step">4. GLM 模型</div>
+            <div class="progress-step">5. 如何使用</div>
+            <div class="progress-step">6. 初使用配置</div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="install">
+                <div class="tab-icon">📦</div>
+                <div>环境准备</div>
+            </div>
+            <div class="tab" data-tab="claude">
+                <div class="tab-icon">🔧</div>
+                <div>安装 Claude Code</div>
+            </div>
+            <div class="tab" data-tab="api">
+                <div class="tab-icon">🔑</div>
+                <div>API 配置</div>
+            </div>
+            <div class="tab" data-tab="glm">
+                <div class="tab-icon">🧠</div>
+                <div>GLM 模型</div>
+            </div>
+            <div class="tab" data-tab="usage">
+                <div class="tab-icon">📖</div>
+                <div>如何使用</div>
+            </div>
+            <div class="tab" data-tab="setup">
+                <div class="tab-icon">⚙️</div>
+                <div>初使用配置</div>
+            </div>
+            <div class="tab" data-tab="faq">
+                <div class="tab-icon">❓</div>
+                <div>常见问题</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 环境准备 -->
+            <div class="tab-content active" id="install">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🔍</span>
+                        第一步：环境检测
+                    </div>
+
+                    <div class="info-card">
+                        <h4>🚀 双击运行检测工具</h4>
+                        <p>在本文件夹中找到 <code style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px;">检测环境.bat</code> 并双击运行</p>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                            <p style="font-size: 14px; margin: 0;">📁 文件位置：<code style="color: #00ff88;">window的claude安装和搭载智谱脑子教程\检测环境.bat</code></p>
+                        </div>
+                        <p style="margin-top: 15px; font-size: 14px;">检测完成后，选择"返回教程"继续 👇</p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">❓</span>
+                        第二步：确认环境
+                    </div>
+
+                    <div class="info-card">
+                        <h4>检测结果显示什么？</h4>
+                        <p>根据检测结果选择：</p>
+                        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+                            <button onclick="goToClaudeTab()" style="padding: 18px 30px; background: rgba(46, 213, 115, 0.3); border: 2px solid #2ed573; color: #1a1a2e; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; text-align: left; transition: all 0.3s;">
+                                [OK] 两个都显示 "Installed"<br>
+                                <span style="font-size: 13px; font-weight: normal; opacity: 0.9;">点击继续安装 Claude Code</span>
+                            </button>
+                            <button onclick="showGitInstallStep()" style="padding: 18px 30px; background: rgba(255, 193, 7, 0.3); border: 2px solid #ffc107; color: #1a1a2e; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; text-align: left; transition: all 0.3s;">
+                                [WARNING] Node.js 显示 "Installed"，Git 显示 "Not Installed"<br>
+                                <span style="font-size: 13px; font-weight: normal; opacity: 0.9;">查看 Git 安装教程（跳到步骤5）</span>
+                            </button>
+                            <button onclick="showNodejsHelp()" style="padding: 18px 30px; background: rgba(255, 71, 87, 0.3); border: 2px solid #ff4757; color: #1a1a2e; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; text-align: left; transition: all 0.3s;">
+                                [ERROR] Node.js 显示 "Not Installed"<br>
+                                <span style="font-size: 13px; font-weight: normal; opacity: 0.9;">查看详细安装教程（包含 Node.js 和 Git）</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" id="nodejs-help-section" style="display: none;">
+                    <div class="section-title">
+                        <span class="icon">📥</span>
+                        安装教程（Node.js + Git）
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 1：访问下载页面</div>
+                        <p>打开浏览器，访问：<a href="https://nodejs.org/" target="_blank" style="color: #0066cc;">https://nodejs.org/</a></p>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                            <p style="margin: 0; font-size: 14px;">📍 看到两个版本按钮：</p>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li><b style="color: #2ed573;">LTS (推荐)</b> - 长期支持版本，稳定可靠 ✅</li>
+                                <li><b style="color: #ffa502;">Current</b> - 最新版本，可能有新功能但不稳定</li>
+                            </ul>
+                            <p style="margin-top: 10px; font-size: 14px;">👉 <b>点击绿色的 "LTS" 按钮下载</b></p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 2：运行安装程序</div>
+                        <ul style="color: #333; line-height: 1.8;">
+                            <li>找到下载的文件（如 <code>node-v20.xx.x-x64.msi</code>）</li>
+                            <li><b>双击</b> 运行安装程序</li>
+                            <li>如果提示 "是否允许此应用进行更改？"，点击 <b>「是」</b></li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 3：安装向导</div>
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 10px 0;">
+                            <p style="margin: 0 0 10px 0;"><b>欢迎界面</b></p>
+                            <p style="margin: 0; font-size: 14px;">点击 <b>「Next」</b> 继续</p>
+                        </div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 10px 0;">
+                            <p style="margin: 0 0 10px 0;"><b>接受许可协议</b></p>
+                            <p style="margin: 0; font-size: 14px;">勾选 "I accept the terms..."，点击 <b>「Next」</b></p>
+                        </div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 10px 0;">
+                            <p style="margin: 0 0 10px 0;"><b>选择安装路径</b></p>
+                            <p style="margin: 0; font-size: 14px;">默认路径即可，点击 <b>「Next」</b></p>
+                        </div>
+
+                        <div style="background: rgba(255,193,7,0.15); border-left: 4px solid #ffc107; padding: 15px; border-radius: 0 8px 8px 0; margin: 10px 0;">
+                            <p style="margin: 0 0 10px 0;"><b>⚠️ 自定义设置（重要）</b></p>
+                            <p style="margin: 0; font-size: 14px;">确保以下选项<b>已勾选</b>：</p>
+                            <ul style="margin-top: 8px; padding-left: 20px; font-size: 14px;">
+                                <li>✅ "Add to PATH"（添加到环境变量）</li>
+                                <li>其他选项可保持默认</li>
+                            </ul>
+                            <p style="margin: 10px 0 0 0; font-size: 14px;">点击 <b>「Next」</b></p>
+                        </div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 10px 0;">
+                            <p style="margin: 0 0 10px 0;"><b>开始安装</b></p>
+                            <p style="margin: 0; font-size: 14px;">点击 <b>「Install」</b> 开始安装</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 4：完成安装</div>
+                        <p>看到安装进度条完成后，点击 <b>「Finish」</b></p>
+                        <div class="tip">
+                            <div class="tip-title">💡 下一步</div>
+                            <p style="margin-top: 10px;">返回本文件夹，<b>双击运行 <code style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px;">检测环境.bat</code></b> 确认安装成功</p>
+                        </div>
+                    </div>
+
+                    <div class="step" id="git-install-step">
+                        <div class="step-title">步骤 5：安装 Git for Windows</div>
+                        <p>Node.js 安装完成后，还需要安装 Git for Windows</p>
+
+                        <div class="info-card" style="margin-top: 15px;">
+                            <h4>🚀 推荐：winget 一键安装</h4>
+                            <p>使用 Windows 自带的 winget 包管理器，<b>一行命令</b>完成安装</p>
+                        </div>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤 1：打开管理员 PowerShell</p>
+                        <p>按 <code>Win + X</code>，然后选择 <b>「终端 (管理员)」</b> 或 <b>「Windows PowerShell (管理员)」</b></p>
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 12px; border-radius: 0 8px 8px 0; margin: 10px 0;">
+                            <p style="margin: 0; font-size: 13px;">💡 窗口标题有「管理员」字样说明权限正确</p>
+                        </div>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤 2：运行安装命令</p>
+                        <div class="code-block" style="font-size: 13px; margin-top: 8px;">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            winget install --id Git.Git -e --source winget
+                        </div>
+                        <p style="margin-top: 10px; font-size: 13px;">等待安装完成即可</p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">备选：手动下载</p>
+                        <p style="margin-top: 5px;">如果 winget 不可用，访问：<a href="https://git-scm.com/downloads" target="_blank" style="color: #0066cc;">https://git-scm.com/downloads</a></p>
+                        <p style="margin-top: 5px; font-size: 14px;">点击 "Windows" 下载安装包，双击运行，一路点击 "Next"</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">安装完成</div>
+                        <p>两个都安装完成后，返回本文件夹，<b>双击运行 <code style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px;">检测环境.bat</code></b> 确认安装成功</p>
+                        <p style="margin-top: 10px;">如果两个都显示 "[OK] Installed"，点击教程中的"两个都显示 Installed"按钮继续</p>
+                    </div>
+
+                    <div style="background: rgba(255, 71, 87, 0.1); border-left: 4px solid #ff4757; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0;">
+                        <p style="margin: 0; font-size: 14px; color: #c0392b;">⚠️ <b>重要提醒：</b></p>
+                        <ul style="margin: 10px 0 0 20px; font-size: 14px; color: #c0392b; padding: 0;">
+                            <li>Git 安装时<b>不要手动修改安装目录</b>，使用默认路径安装到 C 盘</li>
+                            <li>安装后<b>不要随意修改或删除</b> Git 的安装位置</li>
+                            <li>否则会影响 Claude Code 和其他软件的正常使用</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🎯</span>
+                        前置要求说明
+                    </div>
+                    <div class="tip">
+                        <div class="tip-title">💡 为什么要安装这些？</div>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li><b>Node.js</b> = Claude Code 的"引擎"，没有它无法运行</li>
+                            <li><b>Git for Windows</b> = 提供命令行环境，让 Claude Code 正常工作</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning" style="margin-top: 15px;">
+                        <div class="warning-title">⚠️ Python 环境说明</div>
+                        <p>Claude Code <b>不需要</b> Python 环境</p>
+                        <p style="margin-top: 5px;">如果你看到有教程说要安装 Python，那是针对其他工具的，Claude Code 只需要 Node.js 即可</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 安装 Claude Code -->
+            <div class="tab-content" id="claude">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🚀</span>
+                        安装 Claude Code
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title"><span class="step-number">1</span>打开管理员 PowerShell</div>
+                        <p>按 <code>Win + X</code>，然后选择 <b>「终端 (管理员)」</b> 或 <b>「Windows PowerShell (管理员)」</b></p>
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 12px; border-radius: 0 8px 8px 0; margin: 15px 0;">
+                            <p style="margin: 0; font-size: 13px;">💡 窗口标题有「管理员」字样说明权限正确</p>
+                        </div>
+                        <br>
+                        <p>在窗口中输入以下命令并回车：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            npm install -g @anthropic-ai/claude-code --registry=https://registry.npmmirror.com
+                        </div>
+                        <p style="margin-top: 10px; font-size: 13px; color: #666;">💡 使用淘宝镜像源，国内下载更快</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title"><span class="step-number">2</span>安装完成</div>
+                        <p>安装完成后，<b>关闭当前命令行窗口，打开新的</b>，输入 <code>claude --version</code> 验证</p>
+                        <div class="tip">
+                            <div class="tip-title">💡 显示版本号（如 2.1.42）即安装成功 ✅</div>
+                            <p style="margin-top: 10px;">现在可以开始使用 Claude Code 了！</p>
+                        </div>
+
+                        <div class="warning">
+                            <div class="warning-title">⚠️ 提示 'claude 不是命令'？</div>
+                            <p style="margin: 8px 0;">如果提示找不到命令，按以下步骤操作：</p>
+                            <ol style="margin-top: 10px; padding-left: 20px; font-size: 14px;">
+                                <li>关闭所有命令行窗口</li>
+                                <li>打开新的命令行窗口，再试一次</li>
+                                <li>如果还不行，<b>重启电脑</b>（PATH需要刷新）</li>
+                            </ol>
+                            <p style="margin: 10px 0 0 0; font-size: 13px;">📍 Claude Code 安装路径通常在：<code>C:\Users\[你的用户名]\AppData\Roaming\npm\</code></p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title"><span class="step-number">3</span>升级到最新版本</div>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            claude update
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">▶️</span>
+                        启动 Claude Code
+                    </div>
+
+                    <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px;">
+                        <p style="margin: 0; font-weight: bold;">📂 如何使用 Claude Code？</p>
+                        <p style="margin: 8px 0; font-size: 14px;">Claude Code 需要在<b>某个文件夹</b>里面启动，它才能帮你处理这个文件夹里的文件</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">启动步骤（一步一步）</div>
+                        <ol style="margin-top: 10px; font-size: 14px; color: #333; padding-left: 20px;">
+                            <li>找一个你想用来写代码的<b>文件夹</b>（可以在桌面新建一个）</li>
+                            <li><b>进入这个文件夹</b>（双击打开它）</li>
+                            <li>在文件夹窗口顶部的<b>地址栏</b>输入：<code>cmd</code></li>
+                            <li>按 <b>回车键</b>，会出现<b>黑色的命令行窗口</b></li>
+                            <li>在这个窗口中输入：<code>claude</code>，然后按回车</li>
+                            <li>看到 Claude Code 界面就启动成功了！</li>
+                        </ol>
+
+                        <div class="tip" style="margin-top: 15px;">
+                            <div class="tip-title">💡 小技巧</div>
+                            <p style="margin-top: 10px; font-size: 14px;">以后想在这个文件夹用 Claude Code，只需要：<b>进入文件夹 → 在地址栏输入 cmd → 输入 claude</b></p>
+                        </div>
+                    </div>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ 启动时提示需要 git-bash？</div>
+                        <p style="margin: 8px 0;">如果提示「需要 git-bash」，需要设置环境变量：</p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤0：先找到 Git 安装位置</p>
+                        <p style="margin-top: 8px;">在命令行中运行：</p>
+                        <div class="code-block" style="font-size: 13px; margin-top: 8px;">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+where git
+                        </div>
+                        <p style="margin-top: 8px; font-size: 13px;">会显示类似：<code>C:\Program Files\Git\cmd\git.exe</code></p>
+                        <p style="margin-top: 5px; font-size: 13px;">把 <code>cmd\git.exe</code> 改成 <code>bin\bash.exe</code> 就是你要的路径</p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">方法1：PowerShell 命令（推荐）</p>
+                        <div class="code-block" style="font-size: 13px; margin-top: 8px;">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+[System.Environment]::SetEnvironmentVariable('CLAUDE_CODE_GIT_BASH_PATH', 'C:\Program Files\Git\bin\bash.exe', 'User')
+                        </div>
+                        <p style="margin-top: 8px; font-size: 13px;">然后<b>重启命令行窗口</b></p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">方法2：图形界面设置</p>
+                        <ol style="margin-top: 8px; font-size: 14px; padding-left: 20px;">
+                            <li>按 <code>Win + R</code>，输入 <code>sysdm.cpl</code>，回车</li>
+                            <li>点击「高级」→「环境变量」</li>
+                            <li>在「用户变量」中点击「新建」：
+                                <ul style="margin: 5px 0 8px 20px; font-size: 13px;">
+                                    <li>变量名：<code>CLAUDE_CODE_GIT_BASH_PATH</code></li>
+                                    <li>变量值：<code>C:\Program Files\Git\bin\bash.exe</code></li>
+                                </ul>
+                            </li>
+                            <li>点击「确定」保存，<b>重启命令行窗口</b></li>
+                        </ol>
+
+                        <p style="margin-top: 10px; font-size: 13px;">💡 如果 Git 安装在其他位置，请修改路径</p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="goToTab('api')" style="padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;">
+                            下一步：配置 API →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API 配置 -->
+            <div class="tab-content" id="api">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🇨🇳</span>
+                        配置智谱 GLM API
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">注册账号</div>
+                        <p>访问：<a href="https://www.bigmodel.cn/glm-coding?ic=XXSB3R8LTZ" target="_blank">https://www.bigmodel.cn/glm-coding?ic=XXSB3R8LTZ</a></p>
+                        <p style="margin-top: 10px;"><b>使用手机号注册</b></p>
+                        <div class="tip" style="margin-top: 15px;">
+                            <div class="tip-title">🎁 邀请码</div>
+                            <p style="margin-top: 10px; font-size: 14px;">邀请码：<code style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; color: #1a1a2e; font-weight: bold;">XXSB3R8LTZ</code></p>
+                            <p style="font-size: 14px; margin-top: 5px;">（注册时会自动填充，或手动输入）</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">购买套餐</div>
+                        <p>推荐购买<b>包年最便宜</b>的套餐</p>
+                        <div class="warning" style="margin-top: 10px;">
+                            <div class="warning-title">💰 抢购攻略</div>
+                            <p style="margin-top: 5px; font-size: 14px;"><b>早上 10:00</b> 有限时优惠，记得守点抢购！</p>
+                        </div>
+                        <ul style="margin-top: 10px; font-size: 14px; color: #333;">
+                            <li>新用户有免费额度可以试用</li>
+                            <li>支持支付宝/微信支付</li>
+                            <li>购买后立即生效</li>
+                            <li>后续可随时升级更高套餐</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">获取 API Key</div>
+                        <p>在账户设置中复制你的 API Key</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">配置 Claude Code</div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px;">
+                            <p style="margin: 0; font-weight: bold;">📝 什么是终端？（纯小白必看）</p>
+                            <p style="margin: 8px 0; font-size: 14px;">终端就是<b>黑色的命令行窗口</b>，用来输入命令让电脑执行操作</p>
+                            <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">就像和电脑"说话"，告诉电脑要做什么</p>
+                        </div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px;">
+                            <p style="margin: 0; font-weight: bold;">🔧 如何打开终端？（一步一步）</p>
+                            <ol style="margin: 8px 0; font-size: 14px; padding-left: 20px;">
+                                <li>找到键盘左下角的 <b>Win键</b>（带微软图标的键）</li>
+                                <li>同时按住 <b>Win键 + R键</b></li>
+                                <li>在弹出的小窗口中输入 <code>cmd</code></li>
+                                <li>按 <b>回车键</b>（Enter）</li>
+                                <li>会出现一个<b>黑色的命令行窗口</b> - 这就是终端！</li>
+                            </ol>
+                        </div>
+
+                        <p>打开终端后，复制下面的命令，粘贴到终端里，按回车：</p>
+                        <div class="tip" style="margin: 10px 0;">
+                            <p style="margin: 0; font-size: 13px;">💡 <b>此命令不需要管理员权限</b>，普通 PowerShell 或 CMD 即可运行</p>
+                        </div>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            npx @anthropic-ai/claude-code
+                        </div>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤 1：确认安装</p>
+                        <p>运行后会出现提示：</p>
+                        <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; margin: 10px 0; font-family: 'Consolas', monospace; font-size: 13px;">
+                            Need to install the following packages:<br>
+                            @anthropic-ai/claude-code@xxx.x.x<br>
+                            Ok to proceed? (y)
+                        </div>
+                        <p style="margin-top: 10px;"><b>输入 y 并按回车</b></p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤 2：选择语言</p>
+                        <p>会提示选择语言，输入 <code>zh</code> 或选择 <b>「中文」</b></p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤 3：选择 API 提供商</p>
+                        <p>选择 <b>「GLM Coding Plan 中国版」</b></p>
+
+                        <p style="margin-top: 15px; font-weight: bold;">步骤 4：粘贴 API Key</p>
+                        <p>按提示粘贴你的智谱 API Key，按回车确认</p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="goToTab('glm')" style="padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;">
+                            下一步：配置 GLM 模型 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GLM 模型 -->
+            <div class="tab-content" id="glm">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🧠</span>
+                        配置 GLM 模型
+                    </div>
+
+                    <div class="info-card">
+                        <h4>💡 一键配置，无需手动修改文件</h4>
+                        <p>运行 npx 命令时，跟着提示操作即可自动完成 GLM 配置</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">配置 GLM 模型</div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px;">
+                            <p style="margin: 0; font-weight: bold;">📝 如果上面已经配置过 API</p>
+                            <p style="margin: 8px 0; font-size: 14px;">直接跳到下一步：<b>配置 MCP 服务器</b></p>
+                        </div>
+
+                        <p>如果还没配置，在终端运行：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            npx @anthropic-ai/claude-code
+                        </div>
+                        <p style="margin-top: 10px;">跟着提示操作即可，会自动配置好 GLM 模型</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">配置 MCP 服务器</div>
+
+                        <div class="info-card">
+                            <h4>🔌 什么是 MCP？</h4>
+                            <p>MCP（Model Context Protocol）是 Claude Code 的扩展功能，可以添加各种实用工具（如搜索、看图、读网页等）</p>
+                        </div>
+
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0;">
+                            <p style="margin: 0; font-weight: bold;">💡 配置建议：全部开启</p>
+                            <p style="margin: 8px 0; font-size: 14px;">MCP 服务器只在需要时才启动，用完会自动停止，<b>不会占用系统资源</b></p>
+                        </div>
+
+                        <p style="margin-top: 15px;">在配置过程中，遇到 MCP 服务器选项时：<b>全部选择 Yes/启用</b></p>
+
+                        <ul style="margin-top: 10px; font-size: 14px; color: #333;">
+                            <li>✅ 搜索 MCP - 网络搜索功能</li>
+                            <li>✅ 视觉 MCP - 识别图片功能</li>
+                            <li>✅ 网页读取 MCP - 抓取网页内容</li>
+                            <li>✅ 其他可用的 MCP 工具</li>
+                        </ul>
+
+                        <div class="tip" style="margin-top: 15px;">
+                            <div class="tip-title">💡 如何确认 MCP 已开启？</div>
+                            <p style="margin-top: 10px;">配置完成后，在 Claude Code 中输入 <code>/mcp</code> 查看已启用的 MCP 服务器</p>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="goToTab('usage')" style="padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;">
+                            下一步：如何使用 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 如何使用 -->
+            <div class="tab-content" id="usage">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🚀</span>
+                        快速上手 Claude Code
+                    </div>
+
+                    <div class="info-card">
+                        <h4>💡 Claude Code 是什么？</h4>
+                        <p>Claude Code 是一个<b>AI 编程助手</b>，你可以用<b>自然语言</b>和它对话，让它帮你：</p>
+                        <ul style="margin-top: 10px; font-size: 14px; color: #333;">
+                            <li>📝 写代码、改代码、解释代码</li>
+                            <li>🐛 找 Bug、修复问题</li>
+                            <li>📚 写文档、写注释</li>
+                            <li>🔍 分析代码结构</li>
+                            <li>🎯 回答编程问题</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">启动步骤（一步一步）</div>
+                        <ol style="margin-top: 10px; font-size: 14px; color: #333; padding-left: 20px;">
+                            <li>找一个你想用来写代码的<b>文件夹</b></li>
+                            <li><b>进入这个文件夹</b>（双击打开它）</li>
+                            <li>在文件夹窗口顶部的<b>地址栏</b>输入：<code>cmd</code></li>
+                            <li>按 <b>回车键</b>，会出现<b>黑色的命令行窗口</b></li>
+                            <li>在这个窗口中输入：<code>claude</code>，然后按回车</li>
+                        </ol>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">图解：如何在文件夹中启动 CMD</div>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <img src="892e52b6-4b91-4ed7-9910-c7682ee05ece.png" alt="在文件夹地址栏输入cmd启动命令行" style="max-width: 100%; border-radius: 8px; border: 2px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        </div>
+                        <p style="font-size: 13px; color: #666; text-align: center;">如图所示：在文件夹地址栏输入 <code>cmd</code> 后按回车，即可在当前目录打开命令行窗口</p>
+                    </div>
+
+                    <div style="background: rgba(0, 102, 204, 0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0;">
+                        <p style="margin: 0; font-weight: bold;">🔒 安全说明</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><b>Claude Code 只能操作你启动它的文件夹</b></p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px;">在不同文件夹启动 Claude Code，它只能访问和修改那个文件夹里的内容。你的其他文件是安全的。</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">基础使用流程</div>
+                        <ol style="margin-top: 10px; font-size: 14px; color: #333; padding-left: 20px;">
+                            <li>等待 Claude Code 启动，看到欢迎界面</li>
+                            <li>直接开始对话，例如：<code>帮我写一个计算器</code></li>
+                            <li>Claude Code 会自动分析当前文件夹的代码</li>
+                            <li>你可以继续问问题，让它帮你完成各种任务</li>
+                        </ol>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">常用命令</div>
+                        <div class="code-block" style="font-size: 13px;">
+/help - 显示帮助信息<br>
+/status - 查看状态和配置<br>
+/mcp - 查看已启用的 MCP 服务器
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">提示词技巧</div>
+                        <div class="tip">
+                            <div class="tip-title">💡 怎么问效果更好？</div>
+                            <ul style="margin-top: 10px; padding-left: 20px; font-size: 14px;">
+                                <li>✅ <b>具体描述需求</b> - "帮我写一个登录页面" → "帮我写一个包含用户名、密码输入和登录按钮的登录页面"</li>
+                                <li>✅ <b>指定语言/框架</b> - "写一个计算器" → "用 HTML+JavaScript 写一个简单的计算器"</li>
+                                <li>✅ <b>说明上下文</b> - "在这个文件里添加错误处理"</li>
+                                <li>✅ <b>分步骤</b> - 复杂任务可以拆分成多个小问题</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">实用场景示例</div>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>场景</th>
+                                    <th>示例提问</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>生成新代码</td>
+                                    <td><code>"帮我写一个贪吃蛇游戏"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>解释代码</td>
+                                    <td><code>"解释这段代码是做什么的"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>找 Bug</td>
+                                    <td><code>"这个函数有个错误，帮我找出来"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>优化代码</td>
+                                    <td><code>"优化这段代码的性能"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>添加功能</td>
+                                    <td><code>"给这个页面添加搜索功能"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>重写代码</td>
+                                    <td><code>"把这个函数改成异步的"</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">退出 Claude Code</div>
+                        <p>在 Claude Code 界面中按 <code>Ctrl+C</code> 或直接关闭命令行窗口即可退出</p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="goToTab('setup')" style="padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;">
+                            下一步：初使用配置 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 初使用配置 -->
+            <div class="tab-content" id="setup">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🧠</span>
+                        最重要的一步：建立记忆档案
+                    </div>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ 为什么这一步很重要？</div>
+                        <p>装了 Claude Code 但没做这一步，你还是在用「失忆的临时工」。</p>
+                        <p style="margin-top: 8px;">做完这一步，它才能<b>记住你是谁、你在做什么、你喜欢什么风格</b>——永远不用再自我介绍第二遍。</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">创建你的 CLAUDE.md 记忆档案</div>
+                        <p>在 Claude Code 界面里，复制粘贴下面这段话（<b>把括号里的内容替换成你自己的</b>）：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+我叫[你的名字]，我在做[你的工作方向，比如：自媒体运营/产品经理/独立顾问]。
+
+我的主要日常任务有：
+- [任务1，比如：写微信公众号文章]
+- [任务2，比如：管理客户项目]
+- [任务3]
+
+我的工作风格偏好：[比如：简洁直接，不要废话 / 需要详细解释每个步骤]
+我常用的工具：[比如：Notion、飞书、微信]
+
+请帮我创建一个 CLAUDE.md 文件，把以上信息记录下来，作为我们长期合作的基础档案。以后每次我打开 Claude Code，你都要先读这个文件，了解我的背景再开始工作。
+                        </div>
+                        <p style="margin-top: 15px;">它会在你的工作文件夹里生成一个 <code>CLAUDE.md</code> 文件。这就是它的「记忆档案」。</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="tip-title">💡 这个文件的作用</div>
+                        <p>每次启动 Claude Code 后，它会自动读取 <code>CLAUDE.md</code>，了解你是谁、在做什么、偏好什么风格，然后再开始工作。</p>
+                        <p style="margin-top: 8px;"><b>你再也不用每次重新介绍自己了！</b></p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">📂 重要：确保每次都读取</div>
+                        <p><b>两个关键点：</b></p>
+                        <ol style="margin-top: 10px; padding-left: 20px; color: #333; line-height: 1.8;">
+                            <li><b>CLAUDE.md 必须放在工作文件夹的根目录</b></li>
+                            <li><b>启动 Claude Code 时必须在这个文件夹中</b></li>
+                        </ol>
+                        <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0;">
+                            <p style="margin: 0; font-weight: bold;">❌ 错误示例</p>
+                            <p style="margin: 5px 0 0 0; font-size: 14px;">在 D:\ 工作，但 CLAUDE.md 在 D:\工作\项目\ 里 → 读取不到</p>
+                            <p style="margin: 10px 0 0 0; font-weight: bold;">✅ 正确示例</p>
+                            <p style="margin: 5px 0 0 0; font-size: 14px;">进入 D:\工作\项目\ 文件夹，然后启动 Claude Code → 自动读取</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🔍 验证是否生效</div>
+                        <p>创建完 CLAUDE.md 后，直接问它：</p>
+                        <div class="code-block">
+你读过 CLAUDE.md 了吗？我是谁？
+                        </div>
+                        <p style="margin-top: 10px;">如果它能正确回答你的名字和工作，说明生效了 ✅</p>
+                    </div>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ 如果不生效怎么办？</div>
+                        <p>有时 Claude Code 可能没有自动读取，手动告诉它：</p>
+                        <div class="code-block" style="margin-top: 10px;">
+请先读取 CLAUDE.md 文件，了解我的背景再开始工作
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🚀</span>
+                        进阶：搭建让你越用越强的工作系统
+                    </div>
+
+                    <div class="info-card">
+                        <h4>💡 积累型 vs 消耗型</h4>
+                        <p>大多数人用 AI 是「消耗型」：每次打开，得到输出，关掉，清空，三个月后什么都没积累。</p>
+                        <p style="margin-top: 10px;"><b>真正有价值的用法是「积累型」</b>：每次工作，结果存下来，经验沉淀进系统，下次更快，质量更好。</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">让 Claude Code 帮你搭建工作系统</div>
+                        <p>不需要自己一个一个建文件夹。复制下面这段话，直接让 Claude Code 帮你创建：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+请帮我搭建一套工作系统的文件夹结构。
+
+我的情况是：
+- 我做的事情有：[列出你的2-4条业务线，比如：写自媒体内容、做咨询项目、学习英语]
+- 我目前最大的痛点是：[比如：想法总是丢失 / 素材找不到 / AI不记得我的上下文]
+
+请帮我：
+1. 设计适合我的目录结构
+2. 在当前文件夹里把所有文件夹创建好
+3. 给每个文件夹创建一个 README.md 说明它的用途
+4. 更新 CLAUDE.md，让你以后进来能快速了解整个系统
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">💡</span>
+                        实用场景示例
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">不会写代码的人，都在用它干什么</div>
+                        <p style="margin-bottom: 15px;">以下是真实场景，每一条指令都可以直接复制粘贴给 Claude Code 使用：</p>
+
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>场景</th>
+                                    <th>示例指令</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>📝 自媒体/内容创作</td>
+                                    <td><code>"我有3个月的推文草稿，帮我按话题整理，找出哪些角度我还没写过，生成一份选题建议报告"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>📊 销售/客户管理</td>
+                                    <td><code>"把这6个月的客户聊天记录扫一遍，总结每个客户的核心需求和痛点，帮我生成一份客户画像报告"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>📋 项目管理</td>
+                                    <td><code>"把这份会议录音文字稿整理成行动项，按负责人分类，标注截止日期，生成一份跟进清单"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>🗂️ 知识/文件管理</td>
+                                    <td><code>"桌面上有300个文件，帮我按工作、学习、生活分类，重命名混乱的文件名，把一年以上没打开的文件列出来让我决定是否删除"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>📈 数据分析</td>
+                                    <td><code>"帮我分析这个 Excel 表格，找出过去6个月哪类内容互动最高，总结规律，把结论写进一个分析报告文件"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>🎯 个人品牌/PPT</td>
+                                    <td><code>"帮我做一份关于[你的方向]的路演材料，要有清晰的框架，包含问题、解决方案、差异化、行动计划四个部分"</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tip">
+                        <div class="tip-title">🔑 使用诀窍</div>
+                        <p>给 Claude Code 下指令，<b>越具体越好</b>。告诉它：</p>
+                        <ul class="check-list">
+                            <li>操作什么文件</li>
+                            <li>要做什么</li>
+                            <li>输出什么格式</li>
+                            <li>存在哪里</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><b>越明确，结果越准。</b></p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🎯</span>
+                        最后的建议
+                    </div>
+
+                    <div class="info-card">
+                        <h4>✅ 装好 CC，建好 CLAUDE.md，先用一周</h4>
+                        <p>一周之后，你会真正明白什么叫「让 AI 住进你的电脑」。</p>
+                        <p style="margin-top: 10px;">用网页 AI 三个月，什么都没积累。</p>
+                        <p><b>用 CC 三个月，你有了一个越来越懂你的系统。</b></p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="goToTab('faq')" style="padding: 15px 40px; background: linear-gradient(135deg, #2ed573 0%, #26af61 100%); border: none; color: white; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;">
+                            🎉 配置完成！查看常见问题 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 常见问题 -->
+            <div class="tab-content" id="faq">
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">❓</span>
+                        常见问题
+                    </div>
+
+                    <div class="warning">
+                        <div class="warning-title">⚠️ 安装失败？90% 的坑在这里</div>
+                        <p>安装过程中遇到报错不要慌，以下是最常见的三大坑和对应解法：</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🪤 坑 #1：进度条不动 / ETIMEDOUT 报错</div>
+                        <p>这是最常见的问题。原因是<b>终端（黑框框）没有走代理</b>，即使你的浏览器能开 Claude，终端依然走的是直连。</p>
+                        <p style="margin-top: 10px;"><b>Windows 用户：</b></p>
+                        <ul style="margin-top: 10px; padding-left: 20px; color: #333;">
+                            <li>确保代理软件开启<b>全局模式</b></li>
+                            <li>使用<b>美国节点</b>（或其他非被封锁的节点）</li>
+                            <li>检查代理端口是否正确（常见端口：7890、10809 等）</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><b>✓ 解法：</b> 确认代理设置正确后，重新运行安装命令</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🪤 坑 #2：提示找不到命令 / command not found</div>
+                        <p>安装完毕后输入 <code>claude</code> 提示找不到命令，通常是 PATH 没有生效。</p>
+                        <p style="margin-top: 10px;"><b>✓ 解法：</b> 关掉终端窗口，重新打开一个新的终端，再输入 <code>claude</code> 试试</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🪤 坑 #3：浏览器弹出但授权失败</div>
+                        <p>点了 Authorize 之后没有反应，或者跳回报错页面。通常是：</p>
+                        <ul style="margin-top: 10px; padding-left: 20px; color: #333;">
+                            <li>登录的 Claude 账号不是 Pro 会员</li>
+                            <li>网络在授权跳转时断了</li>
+                            <li>代理没开全局模式</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><b>✓ 解法：</b> 确认 claude.ai 账号是 Pro，代理开全局模式，关掉浏览器重试</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="tip-title">💡 万能排错思路</div>
+                        <p>遇到任何报错，先把红色报错文字复制，直接粘贴给 Claude 网页版说：</p>
+                        <div class="code-block" style="margin-top: 10px;">
+"我在安装 Claude Code，遇到这个报错，帮我分析原因：[粘贴报错内容]"
+                        </div>
+                        <p style="margin-top: 10px;">它会告诉你解决方法。</p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">🔧</span>
+                        其他问题
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">Q: Windows 脚本报错怎么办？</div>
+                        <p>A: 在 PowerShell 中运行以下命令允许脚本执行：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">Q: 启动时提示需要 git-bash？</div>
+                        <p>A: 设置环境变量 <code>CLAUDE_CODE_GIT_BASH_PATH</code>：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                            [System.Environment]::SetEnvironmentVariable('CLAUDE_CODE_GIT_BASH_PATH', 'C:\Program Files\Git\bin\bash.exe', 'User')
+                        </div>
+                        <p style="margin-top: 10px;">然后重启命令行窗口</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">Q: 配置修改不生效？</div>
+                        <p>A: 尝试以下步骤：</p>
+                        <ul class="check-list">
+                            <li>关闭所有 Claude Code 窗口</li>
+                            <li>打开新的命令行窗口</li>
+                            <li>检查 JSON 格式是否正确（可用在线工具校验）</li>
+                            <li>必要时删除配置文件重新配置</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">Q: 推荐的 Claude Code 版本？</div>
+                        <p>A: 建议使用 2.1.42 或更新版本，验证 OK</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+# 检查当前版本
+claude --version
+
+# 升级到最新版本
+claude update
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">Q: 除了智谱还有其他国产模型吗？</div>
+                        <p>A: 可以选择：</p>
+                        <ul class="check-list">
+                            <li>Kimi（月之暗面）</li>
+                            <li>DeepSeek（深度求索）</li>
+                            <li>通义千问（阿里）</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">Q: Claude Code 能做什么？</div>
+                        <p>A: 主要功能：</p>
+                        <ul class="check-list">
+                            <li>代码生成和原型开发</li>
+                            <li>问题诊断和 Debug</li>
+                            <li>代码优化和重构</li>
+                            <li>文档编写</li>
+                            <li>项目结构分析</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="icon">💡</span>
+                        使用建议
+                    </div>
+                    <div class="tip">
+                        <div class="tip-title">提示词技巧</div>
+                        <ul class="check-list">
+                            <li>描述越具体，结果越好</li>
+                            <li>Claude Code 能理解项目结构</li>
+                            <li>可以多轮对话逐步细化需求</li>
+                            <li>遇到问题多追问，不要一次期望完美</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📚 教程来源：智谱AI文档 + Twitter社区 | 仅供学习参考使用</p>
+            <p>🤖 bbxiang祝你享受 AI 辅助开发的体验！</p>
+        </div>
+    </div>
+
+    <script>
+        // 自动跳转到指定 Tab（从检测脚本跳转过来）
+        window.addEventListener('DOMContentLoaded', function() {
+            const autoTab = sessionStorage.getItem('autoTab');
+            if (autoTab) {
+                sessionStorage.removeItem('autoTab');
+                const targetTab = document.querySelector(`.tab[data-tab="${autoTab}"]`);
+                if (targetTab) {
+                    targetTab.click();
+                }
+            }
+        });
+
+        // Tab 切换
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const progressSteps = document.querySelectorAll('.progress-step');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+
+                // 更新 Tab 样式
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // 更新内容显示
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+
+                // 更新进度条
+                const tabIndex = Array.from(tabs).indexOf(tab);
+                progressSteps.forEach((step, index) => {
+                    step.classList.remove('active', 'completed');
+                    if (index < tabIndex) {
+                        step.classList.add('completed');
+                    } else if (index === tabIndex) {
+                        step.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // 平台选择 - 选中后跳转到安装Tab
+        function selectPlatform(platform) {
+            const cards = document.querySelectorAll('.platform-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            // 跳转到安装 Claude Code Tab
+            const claudeTab = document.querySelector('.tab[data-tab="claude"]');
+            if (claudeTab) {
+                claudeTab.click();
+            }
+        }
+
+        // 跳转到 Claude 安装 Tab
+        function goToClaudeTab() {
+            const claudeTab = document.querySelector('.tab[data-tab="claude"]');
+            if (claudeTab) {
+                claudeTab.click();
+            }
+        }
+
+        // 跳转到指定 Tab
+        function goToTab(tabId) {
+            const targetTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+            if (targetTab) {
+                targetTab.click();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // 显示 Git 帮助区域
+        function showGitHelp() {
+            const gitSection = document.getElementById('git-help-section');
+            if (gitSection) {
+                gitSection.style.display = 'block';
+                gitSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 显示 Node.js 安装教程
+        function showNodejsHelp() {
+            const nodejsSection = document.getElementById('nodejs-help-section');
+            if (nodejsSection) {
+                nodejsSection.style.display = 'block';
+                nodejsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 显示 Git 安装步骤
+        function showGitInstallStep() {
+            const nodejsSection = document.getElementById('nodejs-help-section');
+            if (nodejsSection) {
+                nodejsSection.style.display = 'block';
+            }
+            const gitStep = document.getElementById('git-install-step');
+            if (gitStep) {
+                setTimeout(() => {
+                    gitStep.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+
+        // 打开 Node.js 下载页面
+        function openNodejsDownload() {
+            window.open('https://nodejs.org/', '_blank');
+        }
+
+        // 复制代码
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement;
+            const text = codeBlock.textContent.replace('复制', '').trim();
+
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '已复制!';
+                setTimeout(() => {
+                    btn.textContent = '复制';
+                }, 2000);
+            }).catch(err => {
+                // 兼容性处理
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                btn.textContent = '已复制!';
+                setTimeout(() => {
+                    btn.textContent = '复制';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
