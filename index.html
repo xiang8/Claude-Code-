@@ -621,6 +621,27 @@
                         <div style="background: rgba(0,212,255,0.1); border-left: 4px solid #0066cc; padding: 12px; border-radius: 0 8px 8px 0; margin: 15px 0;">
                             <p style="margin: 0; font-size: 13px;">💡 窗口标题有「管理员」字样说明权限正确</p>
                         </div>
+
+                        <div class="warning">
+                            <div class="warning-title">⚠️ 如果遇到执行策略错误</div>
+                            <p style="margin: 8px 0;">如果输入 npm 命令后出现类似以下错误：</p>
+                            <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; margin: 10px 0; font-family: 'Consolas', monospace; font-size: 12px; color: #c0392b;">
+                                npm : 无法加载文件 C:\ProgramFiles\nodejs\npm.ps1，因为在此系统上禁止运行脚本。<br>
+                                有关详细信息，请参阅 https:/go.microsoft.com/fwlink/?LinkID=135170 中的<br>
+                                about_Execution_Policies。<br>
+                                所在位置 行:1 字符:1<br>
+                                + npm install -g @anthropic-ai/claude-code ...
+                                + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+                                + CategoryInfo          : SecurityError: (PSSecurityException) [], PSSecurityException
+                            </div>
+                            <p style="margin: 15px 0 8px 0;"><b>解决方法：</b>先输入以下命令并回车：</p>
+                            <div class="code-block" style="font-size: 13px;">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                                Set-ExecutionPolicy RemoteSigned
+                            </div>
+                            <p style="margin: 8px 0 0 0; font-size: 13px;">执行后会提示是否确认，输入 <code>Y</code> 并回车。然后重新运行 npm 安装命令。</p>
+                        </div>
+
                         <br>
                         <p>在窗口中输入以下命令并回车：</p>
                         <div class="code-block">
