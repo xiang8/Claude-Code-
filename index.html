@@ -43,15 +43,16 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 300px;
+            width: 200px;
             height: 100%;
             background: linear-gradient(90deg,
                 transparent 0%,
-                rgba(192, 192, 192, 0.15) 40%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(192, 192, 192, 0.15) 60%,
+                rgba(192, 192, 192, 0.1) 30%,
+                rgba(220, 220, 220, 0.2) 50%,
+                rgba(192, 192, 192, 0.1) 70%,
                 transparent 100%);
-            animation: scanLine 8s ease-in-out infinite, colorShift 8s ease-in-out infinite;
+            mix-blend-mode: overlay;
+            animation: scanLine 25s ease-in-out infinite, colorShift 25s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
         }
@@ -63,48 +64,40 @@
 
         @keyframes scanLine {
             0%, 100% { left: 0; }
-            50% { left: calc(100% - 300px); }
+            50% { left: calc(100% - 200px); }
         }
 
         @keyframes colorShift {
             0% {
                 background: linear-gradient(90deg,
                     transparent 0%,
-                    rgba(192, 192, 192, 0.15) 40%,
-                    rgba(255, 255, 255, 0.3) 50%,
-                    rgba(192, 192, 192, 0.15) 60%,
+                    rgba(200, 200, 200, 0.12) 30%,
+                    rgba(230, 230, 230, 0.25) 50%,
+                    rgba(200, 200, 200, 0.12) 70%,
                     transparent 100%);
             }
-            25% {
+            33% {
                 background: linear-gradient(90deg,
                     transparent 0%,
-                    rgba(80, 80, 80, 0.2) 40%,
-                    rgba(120, 120, 120, 0.4) 50%,
-                    rgba(80, 80, 80, 0.2) 60%,
+                    rgba(100, 100, 100, 0.15) 30%,
+                    rgba(140, 140, 140, 0.28) 50%,
+                    rgba(100, 100, 100, 0.15) 70%,
                     transparent 100%);
             }
-            50% {
+            66% {
                 background: linear-gradient(90deg,
                     transparent 0%,
-                    rgba(60, 60, 60, 0.15) 40%,
-                    rgba(90, 90, 90, 0.3) 50%,
-                    rgba(60, 60, 60, 0.15) 60%,
-                    transparent 100%);
-            }
-            75% {
-                background: linear-gradient(90deg,
-                    transparent 0%,
-                    rgba(100, 100, 100, 0.2) 40%,
-                    rgba(150, 150, 150, 0.4) 50%,
-                    rgba(100, 100, 100, 0.2) 60%,
+                    rgba(70, 70, 70, 0.12) 30%,
+                    rgba(100, 100, 100, 0.22) 50%,
+                    rgba(70, 70, 70, 0.12) 70%,
                     transparent 100%);
             }
             100% {
                 background: linear-gradient(90deg,
                     transparent 0%,
-                    rgba(192, 192, 192, 0.15) 40%,
-                    rgba(255, 255, 255, 0.3) 50%,
-                    rgba(192, 192, 192, 0.15) 60%,
+                    rgba(200, 200, 200, 0.12) 30%,
+                    rgba(230, 230, 230, 0.25) 50%,
+                    rgba(200, 200, 200, 0.12) 70%,
                     transparent 100%);
             }
         }
