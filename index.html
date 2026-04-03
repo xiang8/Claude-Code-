@@ -47,11 +47,11 @@
             height: 100%;
             background: linear-gradient(90deg,
                 transparent 0%,
-                rgba(255, 255, 255, 0.03) 40%,
-                rgba(255, 255, 255, 0.1) 50%,
-                rgba(255, 255, 255, 0.03) 60%,
+                rgba(192, 192, 192, 0.15) 40%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(192, 192, 192, 0.15) 60%,
                 transparent 100%);
-            animation: scanLine 8s ease-in-out infinite;
+            animation: scanLine 8s ease-in-out infinite, colorShift 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
         }
@@ -64,6 +64,49 @@
         @keyframes scanLine {
             0%, 100% { left: 0; }
             50% { left: calc(100% - 300px); }
+        }
+
+        @keyframes colorShift {
+            0% {
+                background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(192, 192, 192, 0.15) 40%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(192, 192, 192, 0.15) 60%,
+                    transparent 100%);
+            }
+            25% {
+                background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(80, 80, 80, 0.2) 40%,
+                    rgba(120, 120, 120, 0.4) 50%,
+                    rgba(80, 80, 80, 0.2) 60%,
+                    transparent 100%);
+            }
+            50% {
+                background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(60, 60, 60, 0.15) 40%,
+                    rgba(90, 90, 90, 0.3) 50%,
+                    rgba(60, 60, 60, 0.15) 60%,
+                    transparent 100%);
+            }
+            75% {
+                background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(100, 100, 100, 0.2) 40%,
+                    rgba(150, 150, 150, 0.4) 50%,
+                    rgba(100, 100, 100, 0.2) 60%,
+                    transparent 100%);
+            }
+            100% {
+                background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(192, 192, 192, 0.15) 40%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(192, 192, 192, 0.15) 60%,
+                    transparent 100%);
+            }
         }
 
         .container {
