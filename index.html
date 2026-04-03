@@ -42,14 +42,14 @@
             content: '';
             position: fixed;
             top: 0;
-            left: -100%;
-            width: 200%;
+            left: 0;
+            width: 300px;
             height: 100%;
             background: linear-gradient(90deg,
                 transparent 0%,
-                rgba(255, 255, 255, 0.05) 45%,
-                rgba(255, 255, 255, 0.15) 50%,
-                rgba(255, 255, 255, 0.05) 55%,
+                rgba(255, 255, 255, 0.03) 40%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.03) 60%,
                 transparent 100%);
             animation: scanLine 8s ease-in-out infinite;
             pointer-events: none;
@@ -62,8 +62,8 @@
         }
 
         @keyframes scanLine {
-            0% { left: -100%; }
-            100% { left: 100%; }
+            0%, 100% { left: 0; }
+            50% { left: calc(100% - 300px); }
         }
 
         .container {
