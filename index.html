@@ -13,9 +13,9 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #8B0000 0%, #CD5C5C 20%, #FF6347 40%, #FFD700 50%, #FFA500 60%, #FF8C00 80%, #8B0000 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #3a3a3a 50%, #6a6a6a 100%);
             background-size: 400% 400%;
-            animation: gradientShift 10s ease infinite;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             padding: 20px;
             line-height: 1.6;
@@ -31,8 +31,8 @@
             right: 0;
             bottom: 0;
             background-image:
-                linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             pointer-events: none;
             z-index: 0;
@@ -47,11 +47,11 @@
             height: 100%;
             background: linear-gradient(90deg,
                 transparent 0%,
-                rgba(255, 215, 0, 0.1) 45%,
-                rgba(255, 255, 255, 0.4) 50%,
-                rgba(255, 215, 0, 0.1) 55%,
+                rgba(255, 255, 255, 0.05) 45%,
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.05) 55%,
                 transparent 100%);
-            animation: scanLine 6s ease-in-out infinite;
+            animation: scanLine 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
         }
