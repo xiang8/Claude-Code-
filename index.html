@@ -1528,7 +1528,7 @@ npx @z_ai/coding-helper
 
                     <div class="warning">
                         <div class="warning-title">⚠️ 安装失败？90% 的坑在这里</div>
-                        <p>安装过程中遇到报错不要慌，以下是最常见的三大坑和对应解法：</p>
+                        <p>安装过程中遇到报错不要慌，以下是最常见的四大坑和对应解法：</p>
                     </div>
 
                     <div class="step">
@@ -1558,6 +1558,24 @@ npx @z_ai/coding-helper
                             <li>代理没开全局模式</li>
                         </ul>
                         <p style="margin-top: 0.5em;"><strong>✓ 解法：</strong> 确认 claude.ai 账号是 Pro，代理开全局模式，关掉浏览器重试</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">🪤 坑 #4：npx 报 Cannot find module（如 wcwidth）</div>
+                        <p>运行 <code>npx @z_ai/coding-helper</code> 时报 <code>Cannot find module 'wcwidth'</code>（或报别的模块名）。原因是 npx 第一次运行时下载依赖<strong>没下完整</strong>（网络中断/超时），缓存里留下一份残缺的包，之后再运行一直复用这份坏缓存，所以每次都报同一个错。</p>
+                        <p style="margin-top: 0.5em;"><strong>✓ 解法（二选一）：</strong></p>
+                        <p style="margin: 0.75em 0 0 0; font-size: 0.9em;">方案 A：清掉 npx 缓存，重新运行：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+rmdir /s /q "%LocalAppData%\npm-cache\_npx"
+npx @z_ai/coding-helper
+                        </div>
+                        <p style="margin: 0.75em 0 0 0; font-size: 0.9em;">方案 B：全局安装一次，以后不用走 npx，更稳（<strong>推荐</strong>）：</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+npm install -g @z_ai/coding-helper
+coding-helper
+                        </div>
                     </div>
 
                     <div class="tip">
